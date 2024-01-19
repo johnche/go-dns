@@ -10,6 +10,8 @@ const (
 	RECURSION_DESIRED uint16 = 1 << 8
 )
 
+// header format
+// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
 type Header struct {
 	ID             uint16
 	Flags          uint16
@@ -30,14 +32,13 @@ func (h Header) Bytes() []byte {
 	return buffer.Bytes()
 }
 
-type HeaderData []byte
-func (data HeaderData) toHeader() Header {
+func ParseHeader(data []byte) Header {
 	return Header{
-		ID: binary.BigEndian.Uint16(data[0:2]),
-		Flags: binary.BigEndian.Uint16(data[2:4]),
-		QuestionCount: binary.BigEndian.Uint16(data[4:6]),
-		AnswerCount: binary.BigEndian.Uint16(data[6:8]),
+		ID:             binary.BigEndian.Uint16(data[0:2]),
+		Flags:          binary.BigEndian.Uint16(data[2:4]),
+		QuestionCount:  binary.BigEndian.Uint16(data[4:6]),
+		AnswerCount:    binary.BigEndian.Uint16(data[6:8]),
 		AuthorityCount: binary.BigEndian.Uint16(data[8:10]),
-		Additionals: binary.BigEndian.Uint16(data[10:12]),
+		Additionals:    binary.BigEndian.Uint16(data[10:12]),
 	}
 }

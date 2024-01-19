@@ -7,14 +7,6 @@ import (
 	"net"
 )
 
-type Record struct {
-	Name  []byte
-	Type  uint16
-	Class uint16
-	TTL   uint16
-	Data  []byte
-}
-
 func CreateQuery(domainName string, recordType uint16) []byte {
 	header := Header{
 		ID:             randUint16(),
@@ -26,7 +18,7 @@ func CreateQuery(domainName string, recordType uint16) []byte {
 	}
 
 	question := Question{
-		Name:  encodeDomain(domainName),
+		Name:  domainName,
 		Type:  recordType,
 		Class: CLASS_IN,
 	}
@@ -41,6 +33,11 @@ func CreateQuery(domainName string, recordType uint16) []byte {
 	query = append(query, byte('\n'))
 
 	return query
+}
+
+func ParseResponse(data []byte) {
+	responseHeader := ParseHeader(data[0:12])
+	responseQuestion, length := ParseQuestion(data[12:])
 }
 
 func Client() {
